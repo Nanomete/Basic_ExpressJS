@@ -8,41 +8,19 @@ const router = express.Router();
  * Delete -> delete
  */
 
-router.get("/product", (req, res) => {
-  // req คือ request (ข้อมูลที่ client ส่งมา)
-  // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
-  res.send("Hello get endpoint >> product");
-});
+const {read, list, create, update, remove} = require("../Controllers/product");
+
+// req คือ request (ข้อมูลที่ client ส่งมา)
+// res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
+router.get("/product", list);
 
 // :id คือ การกำหนด parameter (ตัวแปรที่ส่งมาใน URL)
-router.get("/product/:id", (req, res) => {
-  // req คือ request (ข้อมูลที่ client ส่งมา)
-  // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
-  res.send("Hello 1 product");
-});
+router.get("/product/:id", read);
 
-router.post("/product", (req, res) => {
-  // req คือ request (ข้อมูลที่ client ส่งมา)
-  // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
-  res.send("Hello post endpoint >> product");
-});
+router.post("/product", create);
 
-router.put("/product", (req, res) => {
-    // req คือ request (ข้อมูลที่ client ส่งมา)
-    // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
-    res.json({
-        name: "put method",
-        message: "Hello put endpoint >> product"
-    }); // ส่งข้อมูลแบบ JSON
-})
+router.put("/product", update);
 
-router.delete("/product", (req, res) => {
-    // req คือ request (ข้อมูลที่ client ส่งมา)
-    // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
-    res.json({
-        name: "delete method",
-        message: "Hello delete endpoint >> product"
-    }); // ส่งข้อมูลแบบ JSON
-})
+router.delete("/product", remove);
 
 module.exports = router;
