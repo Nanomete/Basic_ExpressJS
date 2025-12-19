@@ -4,6 +4,11 @@ const { readdirSync } = require("fs"); // fs = file system (โมดูลจ�
 const morgan = require("morgan"); // โมดูลสำหรับดู log การเรียกใช้งาน API
 const cors = require("cors"); // โมดูลสำหรับจัดการ CORS
 const bodyParser = require("body-parser"); // โมดูลสำหรับแปลงข้อมูล request body
+const connectDB = require("./Config/db");
+
+// เชื่อมต่อฐานข้อมูล
+connectDB();
+
 // const productRouter = require("./Routes/product");
 // const authRouter = require("./Routes/auth");
 

@@ -14,13 +14,13 @@ const {read, list, create, update, remove} = require("../Controllers/product");
 // res คือ response (ข้อมูลที่ server ส่งกลับไปหา client)
 router.get("/product", list);
 
-// :id คือ การกำหนด parameter (ตัวแปรที่ส่งมาใน URL)
+// :id คือ การกำหนด parameter (ตัวแปรที่ส่งมาใน URL) เช่น /product/1234  => id = 1234
 router.get("/product/:id", read);
 
 router.post("/product", create);
 
-router.put("/product", update);
+router.put("/product/:id", update);
 
-router.delete("/product", remove);
+router.delete("/product/:id", remove);
 
 module.exports = router;
