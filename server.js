@@ -25,7 +25,7 @@ const app = express();
   // });
 
 app.use(morgan('dev')) // เลือก 'dev' เพราะเป็นโหมดพัฒนา
-app.use(cors())
+app.use(cors()) // เปิด CORS ให้ทุกโดเมนสามารถเข้าถึง API ได้ (ถ้าไม่เปิด CORS จะมีปัญหาเรื่องการเรียก API จากโดเมนอื่น เช่น frontend ที่รันบน localhost:3000 เรียก API ที่รันบน localhost:5000)
 app.use(bodyParser.json({limit: '10mb'})) // สำหรับแปลงข้อมูล request body ที่เป็น JSON เป็นตัวกำหนดขนาดข้อมูล body ได้ เช่น bodyParser.json({ limit: '5mb' })
 
 
