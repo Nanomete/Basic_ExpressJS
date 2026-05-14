@@ -1,5 +1,6 @@
-const User = require("../Models/Users");
+const Users = require("../Models/Users");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 
 exports.register = async (req, res) => {
@@ -7,7 +8,7 @@ exports.register = async (req, res) => {
     // 1. checkUser
     console.log(req.body); // ตรวจสอบข้อมูลที่ส่งมา
     const {name, password} = req.body
-    var user = await User.findOne({ name })
+    var user = await Users.findOne({ name })
     console.log(user);
 
     if (user) {
@@ -16,7 +17,7 @@ exports.register = async (req, res) => {
 
     // 2. encrypt password
     const salt = await bcrypt.genSalt(10); //  salt เก็บข้อมูลที่จะแปลง password ให้เป็นแบบเข้ารหัส (hash) โดยใช้ bcrypt.genSalt() ซึ่งจะสร้าง salt ใหม่ที่มีความยาว 10 ตัวอักษร
-    user = new User({
+    user = new Users({
         name,
         password
     })
@@ -36,46 +37,30 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    res.send("Hello login Controller");
+    // 1. checkUser
+    const {name, password} = req.body
+    var user = await Users.findOneAndUpdate({name}, {new: true})
+
+    if (!user) return res.send("User not found").status(400);
+
+    // 2. check password
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) return res.send("Invalid password").status(400);
+
+    // 3. payload
+    var payload = {
+        user: {
+            name: user.name,
+        }
+    }
+
+    // 4. Generate token
+    jwt.sign(payload, 'jwtsecret', {expiresIn: 360000}, (err, token) => {
+        if (err) throw err;
+        res.json({token, payload});
+    })
   } catch (error) {
     console.log(error);
     res.status(500).send("Server Error");
   }
 };
-
-// exports.register_creat = async (req, res) => {
-//     try {
-//             console.log(req.body); // ตรวจสอบข้อมูลที่ส่งมา
-//             const created = await User(req.body).save(); // บันทึกข้อมูลลงฐานข้อมูล
-
-//             res.send(created);
-//     } catch (error) {
-//             console.log(error);
-//             res.status(400).send("Error, something went wrong");
-//     }
-// }
-
-// exports.register_read = async (req, res) => {
-//     try {
-//             const read = await User.find({}).exec(); // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
-
-//             res.send(read);
-//         } catch (error) {
-//             console.log(error);
-//             res.status(400).send("Error, something went wrong");
-//         }
-// }
-
-// exports.register_list = async (req, res) => {
-//     try {
-//             // _id : id คือการค้นหาข้อมูลโดยใช้ id ที่ส่งมา
-//             // _id มาจากฐานข้อมูล MongoDB ที่สร้างให้อัตโนมัติสำหรับแต่ละเอกสาร (document)
-//             const id = req.params.id
-//             const list = await User.findOne({_id:id}).exec(); // ดึงข้อมูลทั้งหมดจากฐานข้อมูล
-
-//             res.send(list);
-//         } catch (error) {
-//             console.log(error);
-//             res.status(400).send("Error, something went wrong");
-//         }
-// }
